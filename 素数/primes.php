@@ -26,10 +26,10 @@
 	$output = '';
 	if(isset($_POST) && !empty($_POST)){
 	    $n = (int)htmlspecialchars($_POST['sosuu']);
-	    if ($n > 0 && $n <= 1000000) {
+	    if ($n > 0 && $n <= 100000) {
 			$output = generate_primes($n);
 		} else {
-			echo '1から1000000までの整数を入力してください';
+			echo '1から100000までの整数を入力してください';
 		}
 	}
 
@@ -44,19 +44,21 @@
 
 <body>
 	<form method="post" action="">
-		素数の数を入力してください<br />
+		表示する素数の数(最大100000)を入力してください<br />
 		<input name="sosuu" type="text" style="width:100px"><br />
 		<input type="submit" value="送信">
 	</form>
 
+	<p>
 	<?php if (!empty($output)) {
 		for($i=0; $i<count($output); $i++){
-			if ($i % 10 == 0) {
+			echo sprintf("%8d ", $output[$i]);
+			if ($i % 10 == 9) {
 				echo '<br />';
 			}
-			echo $output[$i].' ';
 		}
 	} ?>
+	</p>
 
 
 </body>
