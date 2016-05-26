@@ -25,11 +25,12 @@
 	    }
 	    // データ格納
 	    $arrayRow[] = $rec;
-	    if($arrayRow['messageTakerDepartment'] == $_POST['messageTakerDepartment'] and
-		   $arrayRow['messageTakerName'] == $_POST['messageTakerName'] and
-		   $arrayRow['phoneCallerCompany'] == $_POST['phoneCallerCompany'] and
-		   $arrayRow['phoneCallerDepartment'] == $_POST['phoneCallerDepartment'] and
-		   $arrayRow['phoneCallerName'] == $_POST['phoneCallerName']) {
+	    if($arrayRow['messageTakerDepartment'] == htmlspecialchars($_POST['messageTakerDepartment']) and
+		   $arrayRow['messageTakerName'] == htmlspecialchars($_POST['messageTakerName']) and
+		   $arrayRow['phoneCallerCompany'] == htmlspecialchars($_POST['phoneCallerCompany']) and
+		   $arrayRow['phoneCallerDepartment'] == htmlspecialchars($_POST['phoneCallerDepartment']) and
+		   $arrayRow['phoneCallerName'] == htmlspecialchars($_POST['phoneCallerName'])
+		   ) {
 			$complaintNum = $arrayRow['complaintNum'];
 			$clientID = $arrayRow['clientID'];
 			$insertFlag = 1;
@@ -41,8 +42,10 @@
   	if($insertFlag == 0) {
 		$sql = 'INSERT INTO `client`(`clientID`, `messageTakerDepartment`, `messageTakerName`, `phoneCallerCompany`, 
 				`phoneCallerDepartment`, `phoneCallerName`, `complaintNum`) 
-				VALUES (null,"'.$_POST['messageTakerDepartment'].'","'.$_POST['messageTakerName'].'","'.$_POST['phoneCallerCompany'].'","'.
-				$_POST['phoneCallerDepartment'].'","'.$_POST['phoneCallerName'].'",0)';
+				VALUES (null,"'.htmlspecialchars($_POST['messageTakerDepartment']).'","'.htmlspecialchars($_POST['messageTakerName']).
+					'","'.htmlspecialchars($_POST['phoneCallerCompany']).'","'.
+					htmlspecialchars($_POST['phoneCallerDepartment']).'","'.
+					htmlspecialchars($_POST['phoneCallerName']).'",0)';
 	    $stmt = $dbh->prepare($sql);
 	    $stmt->execute();
 		$complaintNum = 0;
@@ -63,11 +66,11 @@
 	if($messageType == "complaint"){
 		$complaintNum = $complaintNum + 1;
 		$sql = 'UPDATE `client` SET `complaintNum`="'.$complaintNum.
-				'WHERE `messageTakerDepartment`='.$_POST['messageTakerDepartment'].
-				' and `messageTakerName` = ' . $_POST['messageTakerName'].
-				' and `phoneCallerCompany` = ' . $_POST['phoneCallerCompany'].
-				' and `phoneCallerDepartment` = ' . $_POST['phoneCallerDepartment'].
-				' and `phoneCallerName` = ' . $_POST['phoneCallerName'];
+				'WHERE `messageTakerDepartment`='.htmlspecialchars($_POST['messageTakerDepartment']).
+				' and `messageTakerName` = ' . htmlspecialchars($_POST['messageTakerName']).
+				' and `phoneCallerCompany` = ' . htmlspecialchars($_POST['phoneCallerCompany']).
+				' and `phoneCallerDepartment` = ' . htmlspecialchars($_POST['phoneCallerDepartment']).
+				' and `phoneCallerName` = ' . htmlspecialchars($_POST['phoneCallerName']);
     	$stmt = $dbh->prepare($sql);
     	$stmt->execute();
 		$messageType = "クレーム";
@@ -80,8 +83,8 @@
 	$_POST['cmbDay'] . "日" . $_POST['cmbHour'] . "時" . $_POST['cmbMinute'] . "分";
 
 	$sql = 'INSERT INTO `memo`(`memoID`, `clientID`, `date`, `messageType`, `memo`, `phoneAnswererName`) VALUES (null,'
-	      .$clientID.',"'.$memoDate.'","'.$messageType.'","'.$_POST['memo'].'","'.$_POST['phoneAnswererName'].'")';
-echo $sql;
+	      .$clientID.',"'.$memoDate.'","'.$messageType.'","'.htmlspecialchars($_POST['memo']).'","'.$_POST['phoneAnswererName'].'")';
+
     $stmt = $dbh->prepare($sql);
     $stmt->execute();
  ?>

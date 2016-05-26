@@ -15,8 +15,6 @@
 				$_POST['userName']
 				);
 
-	echo $sql;
-
 	$stmt = $dbh->prepare($sql);
 	$stmt->execute();
 ?>
@@ -28,7 +26,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>
 	<?php 
-	echo $_POST['userDepartment'] . "  " . $_POST['userName']; 
+	echo htmlspecialchars($_POST['userDepartment']). "  " .htmlspecialchars($_POST['userName']);
 	?>  様宛ての伝言メモ
 	</title>
 
@@ -44,7 +42,7 @@
       <div class="container">
 		<h1>
 		<?php
-		echo $_POST['userDepartment'] . "  " . $_POST['userName']; 
+		echo htmlspecialchars($_POST['userDepartment']). "  " .htmlspecialchars($_POST['userName']);
 		?>  様宛ての伝言メモ
 		</h1>
 		<table border= "1">
