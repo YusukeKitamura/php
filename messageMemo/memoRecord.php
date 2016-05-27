@@ -16,7 +16,7 @@
 	$clientID = 0;
 
 	//伝言受信者と電話発信者の組み合わせがテーブル内のものと一致した場合、取得したクレーム回数を代入
-	$arrayRow = array();
+	//$arrayRow = array();
 	while(1){
 	    // データ取得
 	    $rec = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -24,15 +24,16 @@
 	      break;
 	    }
 	    // データ格納
-	    $arrayRow[] = $rec;
-	    if($arrayRow['messageTakerDepartment'] == htmlspecialchars($_POST['messageTakerDepartment']) and
-		   $arrayRow['messageTakerName'] == htmlspecialchars($_POST['messageTakerName']) and
-		   $arrayRow['phoneCallerCompany'] == htmlspecialchars($_POST['phoneCallerCompany']) and
-		   $arrayRow['phoneCallerDepartment'] == htmlspecialchars($_POST['phoneCallerDepartment']) and
-		   $arrayRow['phoneCallerName'] == htmlspecialchars($_POST['phoneCallerName'])
+	    //$arrayRow[] = $rec;
+
+	    if($rec['messageTakerDepartment'] == htmlspecialchars($_POST['messageTakerDepartment']) and
+		   $rec['messageTakerName'] == htmlspecialchars($_POST['messageTakerName']) and
+		   $rec['phoneCallerCompany'] == htmlspecialchars($_POST['phoneCallerCompany']) and
+		   $rec['phoneCallerDepartment'] == htmlspecialchars($_POST['phoneCallerDepartment']) and
+		   $rec['phoneCallerName'] == htmlspecialchars($_POST['phoneCallerName'])
 		   ) {
-			$complaintNum = $arrayRow['complaintNum'];
-			$clientID = $arrayRow['clientID'];
+			$complaintNum = $rec['complaintNum'];
+			$clientID = $rec['clientId'];
 			$insertFlag = 1;
 			break;
 		}
@@ -40,7 +41,7 @@
 
 	//伝言受信者と電話発信者の組み合わせがテーブルに存在しない場合は新たにデータを追加
   	if($insertFlag == 0) {
-		$sql = 'INSERT INTO `client`(`clientID`, `messageTakerDepartment`, `messageTakerName`, `phoneCallerCompany`, 
+		$sql = 'INSERT INTO `client`(`clientId`, `messageTakerDepartment`, `messageTakerName`, `phoneCallerCompany`, 
 				`phoneCallerDepartment`, `phoneCallerName`, `complaintNum`) 
 				VALUES (null,"'.htmlspecialchars($_POST['messageTakerDepartment']).'","'.htmlspecialchars($_POST['messageTakerName']).
 					'","'.htmlspecialchars($_POST['phoneCallerCompany']).'","'.
@@ -60,17 +61,22 @@
 
 	//伝言の内容が「クレーム」の場合はクレーム回数を増やしてclientテーブルを修正
 	$messageType = "";
-	if(isSet($_POST['optMessageType'])){
-		$messageType = $_POST['optMessageType'];
+	if(isSet($_POST['messageType'])){
+		$messageType = $_POST['messageType'];
 	}
 	if($messageType == "complaint"){
 		$complaintNum = $complaintNum + 1;
-		$sql = 'UPDATE `client` SET `complaintNum`="'.$complaintNum.
-				'WHERE `messageTakerDepartment`='.htmlspecialchars($_POST['messageTakerDepartment']).
-				' and `messageTakerName` = ' . htmlspecialchars($_POST['messageTakerName']).
-				' and `phoneCallerCompany` = ' . htmlspecialchars($_POST['phoneCallerCompany']).
-				' and `phoneCallerDepartment` = ' . htmlspecialchars($_POST['phoneCallerDepartment']).
-				' and `phoneCallerName` = ' . htmlspecialchars($_POST['phoneCallerName']);
+		$sql = sprintf('UPDATE `client` SET `complaintNum`=%d
+				WHERE `messageTakerDepartment`="%s" and `messageTakerName`="%s"
+				and `phoneCallerCompany`="%s"
+				and `phoneCallerDepartment`="%s" and `phoneCallerName`="%s"',
+				$complaintNum,
+				htmlspecialchars($_POST['messageTakerDepartment']),
+				htmlspecialchars($_POST['messageTakerName']),
+				htmlspecialchars($_POST['phoneCallerCompany']),
+				htmlspecialchars($_POST['phoneCallerDepartment']),
+				htmlspecialchars($_POST['phoneCallerName'])
+				);
     	$stmt = $dbh->prepare($sql);
     	$stmt->execute();
 		$messageType = "クレーム";
@@ -82,7 +88,7 @@
 	$memoDate = $_POST['cmbYear'] . "年" . $_POST['cmbMonth'] . "月" .
 	$_POST['cmbDay'] . "日" . $_POST['cmbHour'] . "時" . $_POST['cmbMinute'] . "分";
 
-	$sql = 'INSERT INTO `memo`(`memoID`, `clientID`, `date`, `messageType`, `memo`, `phoneAnswererName`) VALUES (null,'
+	$sql = 'INSERT INTO `memo`(`memoId`, `clientId`, `date`, `messageType`, `memo`, `phoneAnswererName`) VALUES (null,'
 	      .$clientID.',"'.$memoDate.'","'.$messageType.'","'.htmlspecialchars($_POST['memo']).'","'.$_POST['phoneAnswererName'].'")';
 
     $stmt = $dbh->prepare($sql);
