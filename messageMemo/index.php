@@ -53,6 +53,24 @@
 
       </div>
     </div>
+    <script type="text/javascript"><!--
+    myWeek=new Array("日","月","火","水","木","金","土");
+    function myFunc(){
+      myDate=new Date();
+      myMsg = myDate.getFullYear() + "年";
+      myMsg += ( myDate.getMonth() + 1 ) + "月";
+      myMsg += myDate.getDate() + "日";
+      myMsg += "(" + myWeek[myDate.getDay()] +  "曜日)";
+      myMsg += myDate.getHours() + "時";
+      myMsg += myDate.getMinutes() + "分";
+      myMsg += myDate.getSeconds() + "秒";
+      document.getElementById("myIDdate").innerHTML = myMsg;
+    }
+    </script>
+    <div id="myIDdate"></div>
+    <script type="text/javascript">
+      setInterval( "myFunc()", 1000 );
+    </script>
 	</nav>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
